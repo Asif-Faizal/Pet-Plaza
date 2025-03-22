@@ -39,7 +39,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     
-    // Generate JWT token
+    // Base response data common to all user types
     const responseData = {
       _id: user._id,
       name: user.name,
@@ -50,20 +50,25 @@ export const login = async (req: Request, res: Response) => {
       token: generateToken(user.id)
     };
     
-    // Add image URL based on user type
-    if (user.userType === 'adoption_centre' && user.image) {
-      Object.assign(responseData, { 
-        imageUrl: getFullImageUrl(req, user.image) 
+    // Add user type specific fields
+    if (user.userType === 'adoption_centre') {
+      Object.assign(responseData, {
+        managerName: user.managerName,
+        address: user.address,
+        imageUrl: user.image ? getFullImageUrl(req, user.image) : null
       });
-    } else if (user.userType === 'user' && user.profilePic) {
-      Object.assign(responseData, { 
-        profilePicUrl: getFullImageUrl(req, user.profilePic) 
+    } else if (user.userType === 'user') {
+      Object.assign(responseData, {
+        profilePicUrl: user.profilePic ? getFullImageUrl(req, user.profilePic) : null
       });
     }
     
-    res.status(200).json(responseData);
+    res.status(200).json({
+      success: true,
+      data: responseData
+    });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
