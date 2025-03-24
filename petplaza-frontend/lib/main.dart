@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:petplaza/features/initial_page.dart';
+import 'package:petplaza/features/splash/presentation/initial_page.dart';
 
 import 'core/theme/app_theme.dart';
 
