@@ -24,9 +24,8 @@ class AppThemes {
             fontSize: 22, color: Colors.deepPurpleAccent),
         bodySmall: GoogleFonts.mulish(fontSize: 12, color: Colors.black),
         bodyMedium: GoogleFonts.mulish(fontSize: 14, color: Colors.black),
-        bodyLarge: GoogleFonts.mulish(fontSize: 20, color: Colors.black),
-        labelLarge: GoogleFonts.mulish(
-            fontSize: 30, color: Colors.black, fontWeight: FontWeight.bold),
+        bodyLarge: GoogleFonts.mulish(fontSize: 20, color: Colors.black,fontWeight: FontWeight.bold),
+        labelLarge: GoogleFonts.mulish(fontSize: 30, color: Colors.black, fontWeight: FontWeight.bold),
       ),
       buttonTheme: ButtonThemeData(
         buttonColor: Colors.deepPurple,
