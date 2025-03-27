@@ -70,7 +70,7 @@ class AppThemes {
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.deepPurpleAccent),
-          foregroundColor: MaterialStateProperty.all(Colors.white),
+          foregroundColor: MaterialStateProperty.all(Colors.black),
           textStyle: MaterialStateProperty.all(
             GoogleFonts.openSansCondensed(
               fontWeight: FontWeight.bold,

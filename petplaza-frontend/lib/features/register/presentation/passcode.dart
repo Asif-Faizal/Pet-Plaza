@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petplaza/features/register/bloc/register_user/register_user_bloc.dart';
 import 'package:petplaza/features/register/data/register_user_model.dart';
+import 'package:petplaza/features/register/presentation/homescreen.dart';
 
 class PasscodePage extends StatefulWidget {
   const PasscodePage({super.key, required this.profilePic});
@@ -37,14 +38,14 @@ class _PasscodePageState extends State<PasscodePage> {
       passcode = _controllers.map((controller) => controller.text).join();
     });
     if (passcode.length == 6) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Passcode: $passcode')));
+      Navigator.pushReplacement(context,
+       MaterialPageRoute(builder: (context)=> Homescreen(profilePic: widget.profilePic)));
       final user = RegisterRequestModel(
-          name: "name",
+          name: "asif",
           phoneNumber: "+917559913631",
-          email: "email@email.com",
-          location: "location",
-          passcode: "passcode",
+          email: "asif@email.com",
+          location: "palakkad",
+          passcode: "222222",
           profilePic: widget.profilePic);
       context.read<RegisterUserBloc>().add(RegisterUserEvent(user));
     } else {
