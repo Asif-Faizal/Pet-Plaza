@@ -115,10 +115,10 @@ class AppThemes {
       brightness: Brightness.light,
       primaryColor: Colors.deepPurple,
       appBarTheme: AppBarTheme(
-        color: Colors.deepPurple[400],
+        color: const Color.fromARGB(255, 85, 48, 187),
         titleTextStyle: TextStyle(color: Colors.white),
       ),
-      scaffoldBackgroundColor: const Color.fromARGB(255, 23, 13, 49),
+      scaffoldBackgroundColor: const Color.fromARGB(255, 36, 8, 106),
       textTheme: TextTheme(
         titleLarge: GoogleFonts.barriecito(
             fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold),

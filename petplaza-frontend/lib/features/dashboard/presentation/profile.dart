@@ -32,7 +32,7 @@ class Profile extends StatelessWidget {
                   ),
                   titlePadding: const EdgeInsets.only(bottom: 16),
                   background: Container(
-                    color: Colors.deepPurpleAccent,
+                    color: const Color.fromARGB(255, 85, 48, 187),
                     child: Center(
                       child: isCollapsed
                           ? const SizedBox.shrink()
@@ -130,40 +130,90 @@ class Profile extends StatelessWidget {
             delegate: SliverChildListDelegate(
               [
                 ListTile(
-                  leading: Icon(Icons.person,color: Colors.white,),
-                  title: Text('Account',style: TextStyle(color: Colors.white),),
+                  leading: Icon(
+                    Icons.person,
+                    color: Colors.white,
+                  ),
+                  title: Text(
+                    'Account',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   onTap: () {},
                 ),
                 ListTile(
-                  leading: Icon(Icons.notifications),
-                  title: Text('Notifications',style: TextStyle(color: Colors.white),),
+                  leading: Icon(Icons.notifications,color: Colors.white,),
+                  title: Text(
+                    'Notifications',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   onTap: () {},
                 ),
                 ListTile(
-                  leading: Icon(Icons.lock),
-                  title: Text('Privacy',style: TextStyle(color: Colors.white),),
+                  leading: Icon(Icons.lock,color: Colors.white,),
+                  title: Text(
+                    'Privacy',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   onTap: () {},
                 ),
                 ListTile(
-                  leading: Icon(Icons.pets),
-                  title: Text('My Adoptions',style: TextStyle(color: Colors.white),),
+                  leading: Icon(Icons.pets,color: Colors.white,),
+                  title: Text(
+                    'My Adoptions',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   onTap: () {},
                 ),
                 ListTile(
-                  leading: Icon(Icons.favorite),
-                  title: Text('My Donations',style: TextStyle(color: Colors.white),),
+                  leading: Icon(Icons.favorite,color: Colors.white,),
+                  title: Text(
+                    'My Donations',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   onTap: () {},
                 ),
                 ListTile(
-                  leading: Icon(Icons.help),
-                  title: Text('Help & Support',style: TextStyle(color: Colors.white),),
+                  leading: Icon(Icons.payments,color: Colors.white,),
+                  title: Text(
+                    'Payments',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   onTap: () {},
                 ),
                 ListTile(
-                  leading: Icon(Icons.logout),
-                  title: Text('Logout',style: TextStyle(color: Colors.white),),
+                  leading: Icon(Icons.laptop,color: Colors.white,),
+                  title: Text(
+                    'Remove Ads',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   onTap: () {},
                 ),
+                ListTile(
+                  leading: Icon(Icons.brush,color: Colors.white,),
+                  title: Text(
+                    'Theme',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onTap: () {},
+                ),
+                ListTile(
+                  leading: Icon(Icons.help,color: Colors.white,),
+                  title: Text(
+                    'Help & Support',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onTap: () {},
+                ),SizedBox(height: 20,),
+                SizedBox(
+                  height: 60,
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 150),
+                    child: ElevatedButton.icon(onPressed: (){},
+                    icon: Icon(Icons.logout,
+                    color: Colors.white,), label: Text("Logout")),
+                  )),
+                SizedBox(height: 30,),
               ],
             ),
           ),
