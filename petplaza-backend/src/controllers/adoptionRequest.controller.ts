@@ -7,8 +7,9 @@ interface IAdoptionCentre {
   _id: string;
   name: string;
   location: string;
-  contactNumber?: string;
-  contactAddress?: string;
+  phoneNumber?: string;
+  address?: string;
+  email?: string;
 }
 
 // @desc    Create adoption request
@@ -87,15 +88,15 @@ export const getUserAdoptionRequests = async (req: Request, res: Response) => {
 
     const requests = await AdoptionRequest.find({ user: userId })
       .populate('pet', 'name petType breed images status')
-      .populate<{ adoptionCentre: IAdoptionCentre }>('adoptionCentre', 'name location contactNumber contactAddress')
+      .populate<{ adoptionCentre: IAdoptionCentre }>('adoptionCentre', 'name location phoneNumber address email')
       .sort({ createdAt: -1 });
 
-    // Format the response to only show adoption centre details for accepted requests
+    // Format the response to include adoption centre contact details
     const formattedRequests = requests.map(request => {
       const requestObj = request.toObject();
       
-      // If request is not accepted, remove adoption centre details
-      if (requestObj.status !== 'accepted') {
+      // If request is declined, only show basic adoption centre info
+      if (requestObj.status === 'declined') {
         const { adoptionCentre, ...rest } = requestObj;
         return {
           ...rest,
@@ -107,15 +108,16 @@ export const getUserAdoptionRequests = async (req: Request, res: Response) => {
         };
       }
       
-      // For accepted requests, include all adoption centre details
+      // For accepted and pending requests, show all adoption centre details
       return {
         ...requestObj,
         adoptionCentre: {
           _id: requestObj.adoptionCentre._id,
           name: requestObj.adoptionCentre.name,
           location: requestObj.adoptionCentre.location,
-          contactNumber: requestObj.adoptionCentre.contactNumber,
-          contactAddress: requestObj.adoptionCentre.contactAddress
+          contactNumber: requestObj.adoptionCentre.phoneNumber,
+          contactAddress: requestObj.adoptionCentre.address,
+          email: requestObj.adoptionCentre.email
         }
       };
     });
