@@ -1,7 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:petplaza/features/dashboard/presentation/adoptpets.dart';
+import 'package:petplaza/features/dashboard/presentation/selectpettype.dart';
 import 'package:petplaza/features/register/presentation/createacc.dart';
+import 'package:petplaza/features/dashboard/presentation/homescreen.dart';
+import 'package:petplaza/features/dashboard/presentation/profile.dart';
 
 class Loginpage extends StatefulWidget {
    Loginpage({super.key});
@@ -70,7 +74,10 @@ class _LoginpageState extends State<Loginpage> {
               SizedBox(height: 30,),
               SizedBox(
                 height: 60,
-                child: ElevatedButton(onPressed: (){},
+                child: ElevatedButton(onPressed: (){
+                  Navigator.pushReplacement(context, 
+                      MaterialPageRoute(builder: (context)=> SelectPetTypePage()));
+                },
                  child: Center(child: Text("Login"))),
               )
             ],

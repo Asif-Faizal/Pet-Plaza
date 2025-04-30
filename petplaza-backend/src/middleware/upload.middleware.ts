@@ -15,12 +15,14 @@ const storage = multer.diskStorage({
 
 // Filter for image files
 const imageFilter = (_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  console.log('Uploaded file name:', file.originalname); // Debug log
   // Accept images only
   if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
     return cb(new Error('Only image files are allowed!'));
   }
   cb(null, true);
 };
+
 
 // Maximum file size (5MB)
 const maxSize = 5 * 1024 * 1024;

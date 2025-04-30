@@ -75,7 +75,7 @@ class _CreateaccState extends State<Createacc> {
                       Navigator.pushReplacement(context, 
                       MaterialPageRoute(builder: (context)=> Loginpage()));
                     },
-                    child: Text("Login",style: TextStyle(color: Colors.deepPurpleAccent),))
+                    child: Text("Login",style: TextStyle(color: const Color.fromARGB(255, 158, 127, 246)),))
                 ],
               ),
               SizedBox(height: 30,),

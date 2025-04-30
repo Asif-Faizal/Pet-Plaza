@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petplaza/features/register/bloc/register_user/register_user_bloc.dart';
 import 'package:petplaza/features/register/data/register_user_model.dart';
-import 'package:petplaza/features/register/presentation/homescreen.dart';
+import 'package:petplaza/features/dashboard/presentation/homescreen.dart';
 
 class PasscodePage extends StatefulWidget {
   const PasscodePage({super.key, required this.profilePic});

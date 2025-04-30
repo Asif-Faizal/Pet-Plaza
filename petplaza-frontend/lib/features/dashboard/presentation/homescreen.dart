@@ -1,16 +1,21 @@
 import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:petplaza/features/register/presentation/adoptpets.dart';
+import 'package:petplaza/features/dashboard/presentation/donatepets.dart';
+import 'package:petplaza/features/dashboard/presentation/selectpettype.dart';
+import 'package:petplaza/features/dashboard/presentation/profile.dart';
 
 class Homescreen extends StatelessWidget {
   final File profilePic;
-
+  
   // Accept profilePic as a parameter
-  const Homescreen({super.key, required this.profilePic});
-
+   Homescreen({super.key, required this.profilePic});
+   
   @override
   Widget build(BuildContext context) {
+
+    final theme = Theme.of(context);
+
     // Carousel items: List of Widgets with images and text
     List<Widget> carouselItems = [
       _buildCarouselItem(
@@ -29,30 +34,37 @@ class Homescreen extends StatelessWidget {
       {"icon": Icons.pets, "text": "Adopt Pets"},
       {"icon": Icons.favorite, "text": "Saved Pets"},
       {"icon": Icons.shopping_cart, "text": "Buy Accessories"},
-      {"icon": Icons.medical_services, "text": "Pet Health"},
+      {"icon": Icons.sell, "text": "Donate Pets"},
     ];
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        leading: const Icon(
-          Icons.menu,
-          color: Colors.deepPurpleAccent,
-        ),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.notifications,
-              size: 26,
-              color: Colors.white,
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+              shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+                side: BorderSide(
+                  width: 1,color: Colors.deepPurpleAccent
+                )
+              ))
             ),
-          ),
+            onPressed: (){},
+           icon: Icon(Icons.notifications)),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: CircleAvatar(
-              backgroundImage: FileImage(profilePic),
-              radius: 20,
+            child: InkWell(
+              onTap: (){
+                Navigator.push(context,
+                 MaterialPageRoute(builder: (context)=>Profile()));
+              },
+              child: CircleAvatar(
+                backgroundImage: FileImage(profilePic),
+                radius: 20,
+              ),
             ),
           ),
         ],
@@ -63,16 +75,16 @@ class Homescreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min, // Prevent taking extra space
           children: [
             // Header Text
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 0),
               child: Text(
                 "Find an Awesome Pet for You",
-                style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                style: theme.textTheme.labelMedium,
               ),
             ),
             // Carousel Slider
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 0,vertical: 10),
               child: CarouselSlider(
                 items: carouselItems,
                 options: CarouselOptions(
@@ -85,11 +97,10 @@ class Homescreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-
+        
             // GridView with Different Icons and Button Functionality
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 15),
               child: GridView.builder(
                 physics:
                     const NeverScrollableScrollPhysics(), // Disable Grid Scroll
@@ -110,25 +121,25 @@ class Homescreen extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Adoptpets()));
+                                  builder: (context) => SelectPetTypePage()));
                           break;
                         case 1:
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Adoptpets()));
+                                  builder: (context) => SelectPetTypePage()));
                           break;
                         case 2:
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Adoptpets()));
+                                  builder: (context) => SelectPetTypePage()));
                           break;
                         case 3:
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Adoptpets()));
+                                  builder: (context) => Donatepets()));
                           break;
                       }
                     },
@@ -138,7 +149,7 @@ class Homescreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.deepPurpleAccent.withOpacity(0.2),
+                            color: Colors.deepPurpleAccent.withOpacity(0.6),
                             offset: const Offset(2, 3),
                           ),
                         ],
@@ -150,7 +161,7 @@ class Homescreen extends StatelessWidget {
                           Icon(
                             gridItems[index]["icon"],
                             size: 40,
-                            color: Colors.deepPurpleAccent,
+                            color: Colors.black,
                           ),
                           const SizedBox(height: 8),
                           Text(
