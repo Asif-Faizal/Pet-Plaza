@@ -1,5 +1,7 @@
 import express, { Router } from 'express';
 import userRoutes from './user.routes';
+import petRoutes from './pet.routes';
+import adoptionRequestRoutes from './adoptionRequest.routes';
 
 const router: Router = express.Router();
 
@@ -9,5 +11,7 @@ router.get('/', (_req, res) => {
 });
 
 router.use('/users', userRoutes);
+router.use('/pets', petRoutes);
+router.use('/adoption-requests', adoptionRequestRoutes);
 
 export default router; 
