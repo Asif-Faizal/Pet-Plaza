@@ -254,4 +254,44 @@ export const getPetsByTypeAndStatus = async (req: Request, res: Response) => {
       message: error.message 
     });
   }
+};
+
+// @desc    Get all pets by adoption centre
+// @route   GET /api/pets/centre
+// @access  Private (Adoption Centre only)
+export const getPetsByCentre = async (req: Request, res: Response) => {
+  try {
+    const centreId = req.user?._id;
+
+    // Check if user is an adoption centre
+    const adoptionCentre = await User.findById(centreId);
+    
+    if (!adoptionCentre || adoptionCentre.userType !== 'adoption_centre') {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Only adoption centres can view their pets' 
+      });
+    }
+
+    const pets = await Pet.find({ adoptionCentre: centreId })
+      .populate('adoptionCentre', 'name location')
+      .sort({ createdAt: -1 });
+
+    // Add full URLs for images
+    const petsWithUrls = pets.map(pet => ({
+      ...pet.toObject(),
+      imageUrls: pet.images.map(image => getFullImageUrl(req, image))
+    }));
+
+    res.status(200).json({
+      success: true,
+      count: pets.length,
+      data: petsWithUrls
+    });
+  } catch (error: any) {
+    res.status(500).json({ 
+      success: false, 
+      message: error.message 
+    });
+  }
 }; 
