@@ -130,7 +130,7 @@ export const getPets = async (req: Request, res: Response) => {
 export const getPetById = async (req: Request, res: Response) => {
   try {
     const pet = await Pet.findById(req.params.id)
-      .populate<{ adoptionCentre: PopulatedAdoptionCentre }>('adoptionCentre', 'name location image');
+      .populate('adoptionCentre', 'name location');
 
     if (!pet) {
       return res.status(404).json({ 
@@ -142,12 +142,7 @@ export const getPetById = async (req: Request, res: Response) => {
     // Add full URLs for images
     const petWithUrls = {
       ...pet.toObject(),
-      imageUrls: pet.images.map(image => getFullImageUrl(req, image)),
-      adoptionCentre: {
-        ...pet.adoptionCentre,
-        imageUrl: pet.adoptionCentre.image ? 
-          getFullImageUrl(req, pet.adoptionCentre.image) : null
-      }
+      imageUrls: pet.images.map(image => getFullImageUrl(req, image))
     };
 
     res.status(200).json({
