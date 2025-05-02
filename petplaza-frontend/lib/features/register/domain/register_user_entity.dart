@@ -8,6 +8,8 @@ class User extends Equatable {
   final String userType;
   final String profilePicUrl;
   final String token;
+  final String? managerName;
+  final String? address;
 
   const User({
     required this.id,
@@ -17,8 +19,10 @@ class User extends Equatable {
     required this.userType,
     required this.profilePicUrl,
     required this.token,
+    this.managerName,
+    this.address,
   });
 
   @override
-  List<Object?> get props => [id, name, email, phoneNumber, userType, profilePicUrl, token];
+  List<Object?> get props => [id, name, email, phoneNumber, userType, profilePicUrl, token, managerName, address];
 }

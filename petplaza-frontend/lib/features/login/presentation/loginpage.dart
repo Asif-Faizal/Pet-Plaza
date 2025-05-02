@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petplaza/features/dashboard/presentation/homescreen.dart';
 import 'package:petplaza/features/login/cubit/login_cubit.dart';
-import 'package:petplaza/features/register/presentation/createacc.dart';
+import 'package:petplaza/features/splash/presentation/individual_or_centre_screen.dart';
 
 import '../bloc/bloc/login_bloc.dart';
 
@@ -161,7 +161,7 @@ class _LoginpageState extends State<Loginpage> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Createacc()),
+                                    builder: (context) => IndividualOrCentreScreen()),
                               );
                             },
                             child: Text(

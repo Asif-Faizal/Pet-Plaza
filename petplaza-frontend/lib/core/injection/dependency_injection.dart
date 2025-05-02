@@ -7,6 +7,7 @@ import '../../features/login/data/login_datasource.dart';
 import '../../features/login/data/login_repo_impl.dart';
 import '../../features/login/domain/login_repo.dart';
 import '../../features/register/bloc/register_user/register_user_bloc.dart';
+import '../../features/register/cubit/register_cubit.dart';
 import '../../features/register/data/register_user_datasource.dart';
 import '../../features/register/data/register_user_repo_impl.dart';
 import '../../features/register/domain/register_user.dart';
@@ -36,6 +37,7 @@ Future<void> initDependencies() async {
 
   // Cubit
   sl.registerFactory(() => LoginCubit());
+  sl.registerFactory(() => RegisterCubit());
 
   // BLoC
   sl.registerFactory(() => LoginBloc(loginRepository: sl()));

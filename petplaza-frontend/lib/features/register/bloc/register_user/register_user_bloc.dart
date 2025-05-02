@@ -13,7 +13,7 @@ class RegisterUserBloc extends Bloc<RegisterUserEvent, RegisterUserState> {
   RegisterUserBloc(this.useCase) : super(RegisterUserInitial()) {
     on<RegisterUserEvent>((event, emit) async {
       emit(RegisterUserLoading());
-      final result = await useCase(event.request);
+      final result = await useCase(event.request, event.isIndividual);
       result.fold(
         (failure) => emit(RegisterUserFailure(failure.toString())),
         (user) => emit(RegisterUserSuccess(user)),

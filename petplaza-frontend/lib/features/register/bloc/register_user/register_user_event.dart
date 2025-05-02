@@ -5,6 +5,7 @@ sealed class RegisterEvent {}
 
 class RegisterUserEvent extends RegisterEvent {
   final RegisterRequestModel request;
+  final bool isIndividual;
 
-  RegisterUserEvent(this.request);
+  RegisterUserEvent(this.request, this.isIndividual);
 }

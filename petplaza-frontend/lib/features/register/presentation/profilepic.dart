@@ -7,7 +7,14 @@ import 'package:petplaza/features/register/presentation/passcode.dart';
 import '../bloc/register_user/register_user_bloc.dart';
 
 class Profilepic extends StatefulWidget {
-  const Profilepic({super.key});
+  const Profilepic({super.key, required this.isIndividual, required this.name, required this.phoneNumber, required this.email, required this.location, required this.managerName, required this.address});
+  final bool isIndividual;
+  final String name;
+  final String phoneNumber;
+  final String email;
+  final String location;
+  final String managerName;
+  final String address;
 
   @override
   State<Profilepic> createState() => _ProfilepicState();
@@ -89,47 +96,26 @@ class _ProfilepicState extends State<Profilepic> {
                 "Please Upload profile picture to continue! ",
                 style: theme.textTheme.bodyMedium,
               ),
-              SizedBox(height: 100),
-              SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: ElevatedButton(
-                  onPressed: _pickImageFromGallery,
-                  child: Text("Upload"),
-                ),
-              ),
-              SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: OutlinedButton(
-                  onPressed: _pickImageFromCamera,
-                  child: Text("Take Photo"),
-                ),
-              ),
-              SizedBox(height: 100),
+              SizedBox(height: 300),
               // Conditionally show the "Continue" button only after the profile image is uploaded
               if (_profileImage != null)
-                OutlinedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BlocProvider.value(
-                          value: BlocProvider.of<RegisterUserBloc>(
-                              context), // Pass correct bloc
-                          child: PasscodePage(profilePic: _profileImage!),
+                SizedBox(
+                  width: double.infinity,
+                  height: 60,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider.value(
+                            value: BlocProvider.of<RegisterUserBloc>(
+                                context), // Pass correct bloc
+                            child: PasscodePage(profilePic: _profileImage!, image: _profileImage!, isIndividual: true, name: widget.name, phoneNumber: widget.phoneNumber, email: widget.email, location: widget.location, managerName: widget.managerName, address: widget.address),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  child: Text("Continue", style: theme.textTheme.bodyLarge),
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
+                      );
+                    },
+                    child: Text("Continue"),
                   ),
                 ),
             ],

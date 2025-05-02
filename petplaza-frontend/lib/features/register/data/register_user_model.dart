@@ -8,7 +8,10 @@ class RegisterRequestModel {
   final String email;
   final String location;
   final String passcode;
-  final File profilePic;
+  final File? profilePic;
+  final File? image;
+  final String? managerName;
+  final String? address;
 
   RegisterRequestModel({
     required this.name,
@@ -16,8 +19,25 @@ class RegisterRequestModel {
     required this.email,
     required this.location,
     required this.passcode,
-    required this.profilePic,
+    this.profilePic,
+    this.image,
+    this.managerName,
+    this.address,
   });
+
+  factory RegisterRequestModel.fromJson(Map<String, dynamic> json) {
+    return RegisterRequestModel(
+      name: json['name'],
+      phoneNumber: json['phoneNumber'],
+      email: json['email'],
+      location: json['location'],
+      passcode: json['passcode'],
+      profilePic: json['profilePic'],
+      image: json['image'],
+      managerName: json['managerName'],
+      address: json['address'],
+    );
+  }
 }
 
 // Response Model

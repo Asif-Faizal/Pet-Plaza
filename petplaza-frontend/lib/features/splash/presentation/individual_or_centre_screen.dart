@@ -16,7 +16,7 @@ class IndividualOrCentreScreen extends StatelessWidget {
             height: 60,
             child: ElevatedButton(
               onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Createacc()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Createacc(isIndividual: true)));
               },
               child: Text('Individual'),
             ),
@@ -26,6 +26,7 @@ class IndividualOrCentreScreen extends StatelessWidget {
             height: 60,
             child: ElevatedButton(
               onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Createacc(isIndividual: false)));
               },
               child: Text('Centre'),
             ),

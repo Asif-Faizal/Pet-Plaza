@@ -9,7 +9,7 @@ class RegisterUserUseCase {
 
   RegisterUserUseCase({required this.repository});
 
-  Future<Either<Exception, User>> call(RegisterRequestModel request) {
-    return repository.registerUser(request);
+  Future<Either<Exception, User>> call(RegisterRequestModel request, bool isIndividual) {
+    return repository.registerUser(request, isIndividual);
   }
 }

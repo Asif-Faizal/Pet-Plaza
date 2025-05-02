@@ -11,9 +11,9 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Exception, User>> registerUser(RegisterRequestModel request) async {
+  Future<Either<Exception, User>> registerUser(RegisterRequestModel request, bool isIndividual) async {
     try {
-      final result = await remoteDataSource.registerUser(request);
+      final result = await remoteDataSource.registerUser(request, isIndividual);
       return Right(result);
     } catch (e) {
       return Left(Exception(e.toString()));

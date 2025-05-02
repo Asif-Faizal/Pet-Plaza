@@ -8,6 +8,7 @@ import 'core/injection/dependency_injection.dart' as di;
 import 'core/theme/app_theme.dart';
 import 'features/login/bloc/bloc/login_bloc.dart';
 import 'features/login/cubit/login_cubit.dart';
+import 'features/register/cubit/register_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding
@@ -31,6 +32,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) {
             return di.sl<LoginCubit>();
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return di.sl<RegisterCubit>();
           },
         ),
         BlocProvider(
