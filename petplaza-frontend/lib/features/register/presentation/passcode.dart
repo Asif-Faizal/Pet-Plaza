@@ -38,8 +38,6 @@ class _PasscodePageState extends State<PasscodePage> {
       passcode = _controllers.map((controller) => controller.text).join();
     });
     if (passcode.length == 6) {
-      Navigator.pushReplacement(context,
-       MaterialPageRoute(builder: (context)=> Homescreen(profilePic: widget.profilePic)));
       final user = RegisterRequestModel(
           name: "asif",
           phoneNumber: "+917559913631",

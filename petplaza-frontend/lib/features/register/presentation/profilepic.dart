@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:petplaza/features/login/presentation/loginpage.dart';
 import 'package:petplaza/features/register/presentation/passcode.dart';
 
 import '../bloc/register_user/register_user_bloc.dart';

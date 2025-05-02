@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:petplaza/features/register/presentation/createacc.dart';
 import 'package:petplaza/features/login/presentation/loginpage.dart';
+
+import 'individual_or_centre_screen.dart';
 
 class InitialPage extends StatefulWidget {
   const InitialPage({super.key});
@@ -38,7 +39,7 @@ class _InitialPageState extends State<InitialPage> {
                 height: 60,
                 child: ElevatedButton(onPressed: (){
                   Navigator.push(context,
-                   MaterialPageRoute(builder: (context)=> Createacc()));
+                   MaterialPageRoute(builder: (context)=> IndividualOrCentreScreen()));
                 }, child: Text("Create Account"))),
                 SizedBox(height: 25,),
               SizedBox(

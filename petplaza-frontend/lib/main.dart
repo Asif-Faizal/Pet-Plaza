@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/injection/dependency_injection.dart' as di;
 
 import 'core/theme/app_theme.dart';
+import 'features/login/bloc/bloc/login_bloc.dart';
+import 'features/login/cubit/login_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding
@@ -23,8 +25,17 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) {
-            print('RegisterUserBloc initialized');
             return di.sl<RegisterUserBloc>();
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return di.sl<LoginCubit>();
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return di.sl<LoginBloc>();
           },
         ),
       ],

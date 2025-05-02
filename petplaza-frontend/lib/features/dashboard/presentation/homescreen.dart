@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:petplaza/features/dashboard/presentation/donatepets.dart';
@@ -6,10 +5,11 @@ import 'package:petplaza/features/dashboard/presentation/selectpettype.dart';
 import 'package:petplaza/features/dashboard/presentation/profile.dart';
 
 class Homescreen extends StatelessWidget {
-  final File profilePic;
+  final String profilePic;
+  final String name;
   
   // Accept profilePic as a parameter
-   Homescreen({super.key, required this.profilePic});
+   const Homescreen({super.key, required this.profilePic, required this.name});
    
   @override
   Widget build(BuildContext context) {
@@ -54,20 +54,22 @@ class Homescreen extends StatelessWidget {
             ),
             onPressed: (){},
            icon: Icon(Icons.notifications)),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: InkWell(
-              onTap: (){
-                Navigator.push(context,
-                 MaterialPageRoute(builder: (context)=>Profile()));
-              },
-              child: CircleAvatar(
-                backgroundImage: FileImage(profilePic),
-                radius: 20,
-              ),
+        ],
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: InkWell(
+            onTap: (){
+              Navigator.push(context,
+               MaterialPageRoute(builder: (context)=>Profile()));
+            },
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(profilePic),
+              radius: 20,
             ),
           ),
-        ],
+        ),
+        centerTitle: false,
+        title: Text(name, style: theme.textTheme.bodyMedium),
       ),
       // Wrap the entire body with SingleChildScrollView
       body: SingleChildScrollView(
@@ -76,9 +78,9 @@ class Homescreen extends StatelessWidget {
           children: [
             // Header Text
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
               child: Text(
-                "Find an Awesome Pet for You",
+                "Find an Awesome Pet",
                 style: theme.textTheme.labelMedium,
               ),
             ),
