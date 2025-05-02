@@ -1,6 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 
+import '../../features/dashboard/bloc/bloc/pet_bloc.dart';
+import '../../features/dashboard/data/pet_datasource.dart';
+import '../../features/dashboard/data/pet_repo_impl.dart';
+import '../../features/dashboard/domain/pet_repo.dart';
 import '../../features/login/bloc/bloc/login_bloc.dart';
 import '../../features/login/cubit/login_cubit.dart';
 import '../../features/login/data/login_datasource.dart';
@@ -48,5 +52,18 @@ Future<void> initDependencies() async {
   // Repository
   sl.registerLazySingleton<LoginRepository>(
     () => LoginRepositoryImpl(dataSource: sl()),
+  );
+
+  // Pet Repository
+  sl.registerLazySingleton<PetRepository>(
+    () => PetRepositoryImpl(remoteDatasource: sl()),
+  );
+
+  // Pet Bloc
+  sl.registerFactory(() => PetBloc(petRepository: sl()));
+
+  // Pet Remote Datasource
+  sl.registerLazySingleton<PetRemoteDatasource>(
+    () => PetRemoteDatasourceImpl(client: sl()),
   );
 }

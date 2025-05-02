@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petplaza/features/dashboard/presentation/adoptpets.dart';
+import '../bloc/bloc/pet_bloc.dart';
 
 class SelectPetTypePage extends StatefulWidget {
   const SelectPetTypePage({super.key});
@@ -11,17 +13,17 @@ class SelectPetTypePage extends StatefulWidget {
 class _SelectPetTypePageState extends State<SelectPetTypePage> {
   final List<Map<String, String>> pets = [
     {
-      "name": "Dogs",
+      "name": "Dog",
       "image":
           "https://media.graphassets.com/resize=height:360,width:938/output=format:webp/euPC3XglRIy8o5OmqUCg?width=938"
     },
     {
-      "name": "Cats",
+      "name": "Cat",
       "image":
           "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg"
     },
     {
-      "name": "Birds",
+      "name": "Bird",
       "image":
           "https://cdn.britannica.com/10/250610-050-BC5CCDAF/Zebra-finch-Taeniopygia-guttata-bird.jpg"
     },
@@ -31,17 +33,21 @@ class _SelectPetTypePageState extends State<SelectPetTypePage> {
           "https://cdn.britannica.com/34/240534-050-B8C4B11E/Porcupine-fish-Diodon-hystox.jpg"
     },
     {
-      "name": "Rabbits",
+      "name": "Rabbit",
       "image":
           "https://ptes.org/wp-content/uploads/2014/06/rabbit-e1403800396624.jpg"
     },
   ];
 
   void _onPetTap(String name) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('You tapped on $name!')),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BlocProvider.value(
+          value: context.read<PetBloc>(),
+          child: Adoptpets(petType: name),
+        ),
+      ),
     );
-    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Adoptpets(petType: name)));
   }
 
   @override
@@ -56,7 +62,7 @@ class _SelectPetTypePageState extends State<SelectPetTypePage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
         child: Column(
           children: [
             Expanded(
@@ -75,8 +81,7 @@ class _SelectPetTypePageState extends State<SelectPetTypePage> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        border:
-                            Border.all(color: Colors.deepPurple, width: 2),
+                        border: Border.all(color: Colors.deepPurple, width: 2),
                       ),
                       child: Column(
                         children: [
@@ -112,6 +117,22 @@ class _SelectPetTypePageState extends State<SelectPetTypePage> {
                     ),
                   );
                 },
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider.value(
+                        value: context.read<PetBloc>(),
+                        child: const Adoptpets(petType: ''),
+                      ),
+                    ),
+                  );
+                },
+                child: const Text("View All Pets"),
               ),
             ),
           ],

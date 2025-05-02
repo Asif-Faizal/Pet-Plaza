@@ -87,12 +87,6 @@ class _PasscodePageState extends State<PasscodePage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    final bloc = context.read<RegisterUserBloc>();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
