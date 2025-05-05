@@ -4,17 +4,24 @@ import 'package:petplaza/features/dashboard/presentation/adoption_request_screen
 import 'package:petplaza/features/dashboard/presentation/selectpettype.dart';
 import 'package:petplaza/features/dashboard/presentation/profile.dart';
 
+import 'user_adoption_requests.dart';
+
 class Homescreen extends StatelessWidget {
   final String profilePic;
   final String name;
   final String token;
-  
+  final String userType;
+
   // Accept profilePic as a parameter
-   const Homescreen({super.key, required this.profilePic, required this.name, required this.token});
-   
+  const Homescreen(
+      {super.key,
+      required this.profilePic,
+      required this.name,
+      required this.token,
+      required this.userType});
+
   @override
   Widget build(BuildContext context) {
-
     final theme = Theme.of(context);
 
     // Carousel items: List of Widgets with images and text
@@ -31,12 +38,19 @@ class Homescreen extends StatelessWidget {
     ];
 
     // Grid items with text and icons
-    List<Map<String, dynamic>> gridItems = [
-      {"icon": Icons.pets, "text": "Adopt Pets"},
-      {"icon": Icons.favorite, "text": "Saved Pets"},
-      {"icon": Icons.shopping_cart, "text": "Buy Accessories"},
-      {"icon": Icons.sell, "text": "Adoption Requests"},
-    ];
+    List<Map<String, dynamic>> gridItems = userType == "user"
+        ? [
+            {"icon": Icons.pets, "text": "Adopt Pets"},
+            {"icon": Icons.favorite, "text": "Saved Pets"},
+            {"icon": Icons.shopping_cart, "text": "Buy Accessories"},
+            {"icon": Icons.sell, "text": "Adoption Requests"},
+          ]
+        : [
+            {"icon": Icons.add_box, "text": "Add Pet"},
+            {"icon": Icons.pets, "text": "Adopt Pets"},
+            {"icon": Icons.shopping_cart, "text": "Buy Accessories"},
+            {"icon": Icons.sell, "text": "Adoption Requests"},
+          ];
 
     return Scaffold(
       appBar: AppBar(
@@ -44,24 +58,24 @@ class Homescreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(Colors.transparent),
-              shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-                side: BorderSide(
-                  width: 1,color: Colors.deepPurpleAccent
-                )
-              ))
-            ),
-            onPressed: (){},
-           icon: Icon(Icons.notifications)),
+              style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(
+                          width: 1, color: Colors.deepPurpleAccent)))),
+              onPressed: () {},
+              icon: Icon(Icons.notifications)),
         ],
         leading: Padding(
           padding: const EdgeInsets.only(left: 10),
           child: InkWell(
-            onTap: (){
-              Navigator.push(context,
-               MaterialPageRoute(builder: (context)=>Profile(name: name, profilePic: profilePic)));
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Profile(name: name, profilePic: profilePic)));
             },
             child: CircleAvatar(
               backgroundImage: NetworkImage(profilePic),
@@ -87,7 +101,7 @@ class Homescreen extends StatelessWidget {
             ),
             // Carousel Slider
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0,vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
               child: CarouselSlider(
                 items: carouselItems,
                 options: CarouselOptions(
@@ -100,10 +114,10 @@ class Homescreen extends StatelessWidget {
                 ),
               ),
             ),
-        
+
             // GridView with Different Icons and Button Functionality
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               child: GridView.builder(
                 physics:
                     const NeverScrollableScrollPhysics(), // Disable Grid Scroll
@@ -121,34 +135,44 @@ class Homescreen extends StatelessWidget {
                       // Define actions based on index
                       switch (index) {
                         case 0:
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SelectPetTypePage(token: token)));
+                          if (userType == "user") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SelectPetTypePage(token: token)));
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddPetPage()));
+                          }
                           break;
                         case 1:
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SelectPetTypePage(token: token)));
+                          if (userType == "adoption_centre") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SelectPetTypePage(token: token)));
+                          }
                           break;
                         case 2:
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SelectPetTypePage(token: token)));
                           break;
                         case 3:
+                        if(userType == "user"){
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AdoptionRequestScreen()));
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        UserAdoptionRequestsScreen(token: token)));
+                        }
                           break;
                       }
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(

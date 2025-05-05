@@ -1,12 +1,16 @@
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:petplaza/features/dashboard/domain/user_adoption_requests/user_adoption_request_repo.dart' show UserAdoptionRequestRepository;
 
 import '../../features/dashboard/bloc/adoption_request/adoption_requests_bloc.dart';
 import '../../features/dashboard/bloc/pet/pet_bloc.dart';
+import '../../features/dashboard/bloc/user_adoption_requests/user_adoption_requests_bloc.dart';
 import '../../features/dashboard/data/adoption_request/adoption_request_datasource.dart';
 import '../../features/dashboard/data/adoption_request/adoption_request_repo_impl.dart';
 import '../../features/dashboard/data/pet/pet_datasource.dart';
 import '../../features/dashboard/data/pet/pet_repo_impl.dart';
+import '../../features/dashboard/data/user_adoption_requests/user_adoption_request_datasource.dart';
+import '../../features/dashboard/data/user_adoption_requests/user_adoption_request_repo_impl.dart';
 import '../../features/dashboard/domain/adoption_request/adoption_request_repo.dart';
 import '../../features/dashboard/domain/pet/pet_repo.dart';
 import '../../features/login/bloc/bloc/login_bloc.dart';
@@ -83,5 +87,18 @@ Future<void> initDependencies() async {
 
   // Pet Adoption Bloc
   sl.registerFactory(() => AdoptionRequestsBloc(petAdoptionRepository: sl()));
+
+  // User Adoption Request Remote Datasource
+  sl.registerLazySingleton<UserAdoptionRequestRemoteDataSource>(
+    () => UserAdoptionRequestRemoteDataSourceImpl(client: sl()),
+  );
+
+  // User Adoption Request Repository
+  sl.registerLazySingleton<UserAdoptionRequestRepository>(
+    () => UserAdoptionRequestRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // User Adoption Request Bloc
+  sl.registerFactory(() => UserAdoptionRequestsBloc(userAdoptionRequestRepository: sl()));
 
 }

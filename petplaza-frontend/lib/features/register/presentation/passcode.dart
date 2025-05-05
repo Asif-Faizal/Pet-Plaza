@@ -94,7 +94,7 @@ class _PasscodePageState extends State<PasscodePage> {
       body: BlocListener<RegisterUserBloc, RegisterUserState>(
         listener: (context, state) {
           if (state is RegisterUserSuccess) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => Homescreen(name: state.user.name,profilePic: state.user.profilePicUrl,token: state.user.token)));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Homescreen(name: state.user.name,profilePic: state.user.profilePicUrl,token: state.user.token,userType: state.user.userType)));
           }else if (state is RegisterUserFailure) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: Colors.red,

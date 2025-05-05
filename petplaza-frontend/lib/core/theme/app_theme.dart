@@ -103,7 +103,7 @@ class AppThemes {
           borderRadius: BorderRadius.circular(12),
         ),
         hintStyle: TextStyle(color: Colors.black45),
-        labelStyle: TextStyle(color: Colors.deepPurpleAccent),
+        labelStyle: TextStyle(color: Colors.deepPurpleAccent,fontSize: 16),
       ),
     );
   }

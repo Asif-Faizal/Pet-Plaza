@@ -8,6 +8,7 @@ import 'core/injection/dependency_injection.dart' as di;
 import 'core/theme/app_theme.dart';
 import 'features/dashboard/bloc/adoption_request/adoption_requests_bloc.dart';
 import 'features/dashboard/bloc/pet/pet_bloc.dart';
+import 'features/dashboard/bloc/user_adoption_requests/user_adoption_requests_bloc.dart';
 import 'features/login/bloc/bloc/login_bloc.dart';
 import 'features/login/cubit/login_cubit.dart';
 import 'features/register/cubit/register_cubit.dart';
@@ -54,6 +55,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) {
             return di.sl<AdoptionRequestsBloc>();
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return di.sl<UserAdoptionRequestsBloc>();
           },
         ),
       ],

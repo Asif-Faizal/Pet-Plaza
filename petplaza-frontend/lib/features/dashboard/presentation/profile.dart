@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:petplaza/features/splash/presentation/initial_page.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key, required this.name, required this.profilePic});
@@ -32,7 +33,6 @@ class Profile extends StatelessWidget {
                     style: theme.textTheme.titleSmall
                         ?.copyWith(color: Colors.white),
                   ),
-                  
                   background: Container(
                     color: Colors.deepPurpleAccent,
                     child: Center(
@@ -41,7 +41,6 @@ class Profile extends StatelessWidget {
                           : CircleAvatar(
                               radius: 50,
                               backgroundImage: NetworkImage(profilePic),
-                              
                             ),
                     ),
                   ),
@@ -122,99 +121,33 @@ class Profile extends StatelessWidget {
               ),
             ),
           ),
-
-          // Static List
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                ListTile(
-                  leading: Icon(
-                    Icons.person,
-                    color: Colors.white,
-                  ),
-                  title: Text(
-                    'Account',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: Icon(Icons.notifications,color: Colors.white,),
-                  title: Text(
-                    'Notifications',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: Icon(Icons.lock,color: Colors.white,),
-                  title: Text(
-                    'Privacy',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: Icon(Icons.pets,color: Colors.white,),
-                  title: Text(
-                    'My Adoptions',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: Icon(Icons.favorite,color: Colors.white,),
-                  title: Text(
-                    'My Donations',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: Icon(Icons.payments,color: Colors.white,),
-                  title: Text(
-                    'Payments',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: Icon(Icons.laptop,color: Colors.white,),
-                  title: Text(
-                    'Remove Ads',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: Icon(Icons.brush,color: Colors.white,),
-                  title: Text(
-                    'Theme',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: Icon(Icons.help,color: Colors.white,),
-                  title: Text(
-                    'Help & Support',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onTap: () {},
-                ),SizedBox(height: 20,),
-                SizedBox(
-                  height: 60,
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 150),
-                    child: ElevatedButton.icon(onPressed: (){},
-                    icon: Icon(Icons.logout,
-                    color: Colors.white,), label: Text("Logout")),
-                  )),
-                SizedBox(height: 30,),
-              ],
-            ),
-          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+                height: 50,
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                      onPressed: () {
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>InitialPage()), (route) => false);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            backgroundColor: Colors.green,
+                            behavior: SnackBarBehavior.floating,
+                            content: Text("Logged out successfully"),
+                          ),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.logout,
+                        color: Colors.white,
+                      ),
+                      label: Text("Logout")),
+                )),
+          )
         ],
       ),
     );

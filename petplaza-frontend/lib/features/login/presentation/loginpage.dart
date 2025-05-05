@@ -42,7 +42,7 @@ class _LoginpageState extends State<Loginpage> {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Homescreen(profilePic: state.loginEntity.imageUrl, name: state.loginEntity.name, token: state.loginEntity.token),
+                      builder: (context) => Homescreen(profilePic: state.loginEntity.imageUrl, name: state.loginEntity.name, token: state.loginEntity.token, userType: state.loginEntity.userType),
                     ),
                     (route) => false,
                   );

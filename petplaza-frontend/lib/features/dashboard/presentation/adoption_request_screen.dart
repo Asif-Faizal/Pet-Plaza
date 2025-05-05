@@ -1,127 +1,127 @@
 import 'package:flutter/material.dart';
 
-class AdoptionRequestScreen extends StatefulWidget {
-  const AdoptionRequestScreen({super.key});
+class AddPetPage extends StatefulWidget {
+  const AddPetPage({super.key});
 
   @override
-  State<AdoptionRequestScreen> createState() => _AdoptionRequestScreenState();
+  State<AddPetPage> createState() => _AddPetPageState();
 }
 
-class _AdoptionRequestScreenState extends State<AdoptionRequestScreen> {
+class _AddPetPageState extends State<AddPetPage> {
   final TextEditingController petNameController = TextEditingController();
-
+  final TextEditingController petTypeController = TextEditingController();
   final TextEditingController petAgeController = TextEditingController();
-
   final TextEditingController petWeightController = TextEditingController();
-
   final TextEditingController petBreedController = TextEditingController();
-
   final TextEditingController ownerNameController = TextEditingController();
-
-  final TextEditingController OwnerContactController = TextEditingController();
-
-  final TextEditingController OwnerAddressController = TextEditingController();
+  final TextEditingController ownerContactController = TextEditingController();
+  final TextEditingController ownerAddressController = TextEditingController();
 
   String selectedCode = '+91';
-  // Default country code
   final List<String> countryCodes = ['+91', '+86', '+351', '+971', '+92'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.deepPurpleAccent,
+        automaticallyImplyLeading: false,
         leading: SizedBox.shrink(),
         title: Text(
-          "Adoption Request",
+          "Add Pet",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: ListView(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Pet Details",
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            //pet details
+            // Pet Details Section_buildSectionTitle("Owner Details"),
+            _buildSectionTitle("Pet Details"),
+            const SizedBox(height: 20),
             TextField(
               controller: petNameController,
               decoration: InputDecoration(
                 labelText: "Pet Name",
-                labelStyle: TextStyle(color: Colors.white),
+                border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(
-              height: 30,
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: TextField(
+                    controller: petTypeController,
+                    decoration: InputDecoration(
+                      labelText: "Pet Type",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  flex: 3,
+                  child: TextField(
+                    controller: petBreedController,
+                    decoration: InputDecoration(
+                      labelText: "Pet Breed",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: TextField(
+                    controller: petAgeController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: "Pet Age",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  flex: 2,
+                  child: TextField(
+                    controller: petWeightController,
+                    decoration: InputDecoration(
+                      labelText: "Pet Weight",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+              ],
             ),
 
-            TextField(
-              controller: petAgeController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: "Pet Age",
-                labelStyle: TextStyle(color: Colors.white),
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-
-            TextField(
-              controller: petWeightController,
-              decoration: InputDecoration(
-                labelText: "Pet Weight",
-                labelStyle: TextStyle(color: Colors.white),
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-
-            TextField(
-              controller: petBreedController,
-              decoration: InputDecoration(
-                labelText: "Pet Breed",
-                labelStyle: TextStyle(color: Colors.white),
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-
-            //owner details
-            Text(
-              "Owner Details",
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 32),
+            
+            // Owner Details Section
+            _buildSectionTitle("Owner Details"),
+            const SizedBox(height: 20),
             TextField(
               controller: ownerNameController,
               decoration: InputDecoration(
                 labelText: "Owner Name",
-                labelStyle: TextStyle(color: Colors.white),
-                hintText: 'Enter Your Name',
-                hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
+                border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(
-              height: 30,
-            ),
-
+            const SizedBox(height: 16),
             TextField(
-              controller: OwnerContactController,
+              controller: ownerContactController,
               keyboardType: TextInputType.phone,
               maxLength: 10,
               decoration: InputDecoration(
                 counterText: '',
                 labelText: "Contact Number",
-                labelStyle: TextStyle(color: Colors.white),
+                border: OutlineInputBorder(),
                 prefixIcon: PopupMenuButton<String>(
                   onSelected: (value) {
                     setState(() {
@@ -131,48 +131,60 @@ class _AdoptionRequestScreenState extends State<AdoptionRequestScreen> {
                   itemBuilder: (context) => countryCodes
                       .map((code) => PopupMenuItem(
                             value: code,
-                            child: Text(code,style: TextStyle(fontSize: 18),),
+                            child: Text(code, style: TextStyle(fontSize: 18)),
                           ))
                       .toList(),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     child: Text(
                       selectedCode,
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(color: Colors.deepPurpleAccent, fontSize: 18),
                     ),
                   ),
                 ),
-                hintText: 'Enter phone number',
-                hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
               ),
             ),
-            SizedBox(
-              height: 30,
-            ),
-
+            const SizedBox(height: 16),
             TextField(
-              controller: OwnerAddressController,
+              controller: ownerAddressController,
+              maxLines: 3,
               decoration: InputDecoration(
                 labelText: "Address",
-                hintText: "building no. / flat no.",
-                labelStyle: TextStyle(color: Colors.white),
-                hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
+                border: OutlineInputBorder(),
+                alignLabelWithHint: true,
               ),
             ),
+            const SizedBox(height: 32),
             SizedBox(
-              height: 30,
-            ),
-
-            SizedBox(
-              height: 50,
               width: double.infinity,
+              height: 50,
               child: ElevatedButton(
                 onPressed: () {},
-                child: Text("Save"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurpleAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  "Save",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
       ),
     );
   }
