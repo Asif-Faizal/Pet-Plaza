@@ -1,15 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:petplaza/features/dashboard/presentation/donatepets.dart';
+import 'package:petplaza/features/dashboard/presentation/adoption_request_screen.dart';
 import 'package:petplaza/features/dashboard/presentation/selectpettype.dart';
 import 'package:petplaza/features/dashboard/presentation/profile.dart';
 
 class Homescreen extends StatelessWidget {
   final String profilePic;
   final String name;
+  final String token;
   
   // Accept profilePic as a parameter
-   const Homescreen({super.key, required this.profilePic, required this.name});
+   const Homescreen({super.key, required this.profilePic, required this.name, required this.token});
    
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class Homescreen extends StatelessWidget {
       {"icon": Icons.pets, "text": "Adopt Pets"},
       {"icon": Icons.favorite, "text": "Saved Pets"},
       {"icon": Icons.shopping_cart, "text": "Buy Accessories"},
-      {"icon": Icons.sell, "text": "Donate Pets"},
+      {"icon": Icons.sell, "text": "Adoption Requests"},
     ];
 
     return Scaffold(
@@ -60,7 +61,7 @@ class Homescreen extends StatelessWidget {
           child: InkWell(
             onTap: (){
               Navigator.push(context,
-               MaterialPageRoute(builder: (context)=>Profile()));
+               MaterialPageRoute(builder: (context)=>Profile(name: name, profilePic: profilePic)));
             },
             child: CircleAvatar(
               backgroundImage: NetworkImage(profilePic),
@@ -123,25 +124,25 @@ class Homescreen extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SelectPetTypePage()));
+                                  builder: (context) => SelectPetTypePage(token: token)));
                           break;
                         case 1:
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SelectPetTypePage()));
+                                  builder: (context) => SelectPetTypePage(token: token)));
                           break;
                         case 2:
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SelectPetTypePage()));
+                                  builder: (context) => SelectPetTypePage(token: token)));
                           break;
                         case 3:
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Donatepets()));
+                                  builder: (context) => AdoptionRequestScreen()));
                           break;
                       }
                     },

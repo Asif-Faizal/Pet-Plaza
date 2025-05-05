@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/bloc/pet_bloc.dart';
-import '../domain/pet_entity.dart';
+import '../bloc/pet/pet_bloc.dart';
+import '../domain/pet/pet_entity.dart';
 import 'petdetails_screen.dart';
 
 class Adoptpets extends StatefulWidget {
-  const Adoptpets({super.key, required this.petType});
+  const Adoptpets({super.key, required this.petType, required this.token});
   final String petType;
+  final String token;
 
   @override
   State<Adoptpets> createState() => _AdoptpetsState();
@@ -31,6 +32,8 @@ class _AdoptpetsState extends State<Adoptpets> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: const SizedBox.shrink(),
+        backgroundColor: Colors.deepPurpleAccent,
         title: Text(
           widget.petType.isEmpty ? 'All Pets' : widget.petType,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -69,7 +72,7 @@ class _AdoptpetsState extends State<Adoptpets> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PetDetailsScreen(pet: pet),
+                  builder: (context) => PetDetailsScreen(pet: pet, token: widget.token),
                 ),
               );
             },

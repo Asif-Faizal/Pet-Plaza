@@ -1,4 +1,4 @@
-import 'package:petplaza/features/dashboard/domain/pet_entity.dart';
+import 'package:petplaza/features/dashboard/domain/pet/pet_entity.dart';
 
 class PetResponseModel extends Pet {
   const PetResponseModel({

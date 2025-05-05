@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
-import '../domain/pet_entity.dart';
-import '../domain/pet_repo.dart';
+import '../../domain/pet/pet_entity.dart';
+import '../../domain/pet/pet_repo.dart';
 import 'pet_datasource.dart';
 import 'pet_request_model.dart';
 

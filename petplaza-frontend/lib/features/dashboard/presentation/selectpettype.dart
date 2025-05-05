@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petplaza/features/dashboard/presentation/adoptpets.dart';
-import '../bloc/bloc/pet_bloc.dart';
+import '../bloc/pet/pet_bloc.dart';
 
 class SelectPetTypePage extends StatefulWidget {
-  const SelectPetTypePage({super.key});
+  const SelectPetTypePage({super.key, required this.token});
+  final String token;
 
   @override
   State<SelectPetTypePage> createState() => _SelectPetTypePageState();
@@ -44,7 +45,7 @@ class _SelectPetTypePageState extends State<SelectPetTypePage> {
       MaterialPageRoute(
         builder: (context) => BlocProvider.value(
           value: context.read<PetBloc>(),
-          child: Adoptpets(petType: name),
+          child: Adoptpets(petType: name, token: widget.token),
         ),
       ),
     );
@@ -127,7 +128,7 @@ class _SelectPetTypePageState extends State<SelectPetTypePage> {
                     MaterialPageRoute(
                       builder: (context) => BlocProvider.value(
                         value: context.read<PetBloc>(),
-                        child: const Adoptpets(petType: ''),
+                        child: Adoptpets(petType: '', token: widget.token),
                       ),
                     ),
                   );

@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../../domain/pet_entity.dart';
-import '../../domain/pet_repo.dart';
+import '../../domain/pet/pet_entity.dart';
+import '../../domain/pet/pet_repo.dart';
 
 part 'pet_event.dart';
 part 'pet_state.dart';

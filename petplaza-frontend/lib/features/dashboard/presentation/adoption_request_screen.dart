@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Donatepets extends StatefulWidget {
-  Donatepets({super.key});
+class AdoptionRequestScreen extends StatefulWidget {
+  const AdoptionRequestScreen({super.key});
 
   @override
-  State<Donatepets> createState() => _DonatepetsState();
+  State<AdoptionRequestScreen> createState() => _AdoptionRequestScreenState();
 }
 
-class _DonatepetsState extends State<Donatepets> {
+class _AdoptionRequestScreenState extends State<AdoptionRequestScreen> {
   final TextEditingController petNameController = TextEditingController();
 
   final TextEditingController petAgeController = TextEditingController();
@@ -32,7 +32,7 @@ class _DonatepetsState extends State<Donatepets> {
       appBar: AppBar(
         leading: SizedBox.shrink(),
         title: Text(
-          "Donate Pets",
+          "Adoption Request",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),

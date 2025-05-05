@@ -6,7 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/injection/dependency_injection.dart' as di;
 
 import 'core/theme/app_theme.dart';
-import 'features/dashboard/bloc/bloc/pet_bloc.dart';
+import 'features/dashboard/bloc/adoption_request/adoption_requests_bloc.dart';
+import 'features/dashboard/bloc/pet/pet_bloc.dart';
 import 'features/login/bloc/bloc/login_bloc.dart';
 import 'features/login/cubit/login_cubit.dart';
 import 'features/register/cubit/register_cubit.dart';
@@ -48,6 +49,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) {
             return di.sl<PetBloc>();
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return di.sl<AdoptionRequestsBloc>();
           },
         ),
       ],

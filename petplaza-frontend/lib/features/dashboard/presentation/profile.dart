@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Profile extends StatelessWidget {
-  const Profile({super.key});
+  const Profile({super.key, required this.name, required this.profilePic});
+  final String name;
+  final String profilePic;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,7 @@ class Profile extends StatelessWidget {
             elevation: 0,
             automaticallyImplyLeading: false,
             pinned: true,
-            expandedHeight: 250,
+            expandedHeight: 180,
             backgroundColor: Colors.deepPurpleAccent,
             centerTitle: true,
             flexibleSpace: LayoutBuilder(
@@ -26,24 +28,20 @@ class Profile extends StatelessWidget {
                 return FlexibleSpaceBar(
                   centerTitle: true,
                   title: Text(
-                    "Customer Nameeeeee",
+                    name,
                     style: theme.textTheme.titleSmall
                         ?.copyWith(color: Colors.white),
                   ),
-                  titlePadding: const EdgeInsets.only(bottom: 16),
+                  
                   background: Container(
-                    color: const Color.fromARGB(255, 85, 48, 187),
+                    color: Colors.deepPurpleAccent,
                     child: Center(
                       child: isCollapsed
                           ? const SizedBox.shrink()
-                          : const CircleAvatar(
+                          : CircleAvatar(
                               radius: 50,
-                              backgroundColor: Colors.white,
-                              child: Icon(
-                                Icons.macro_off_outlined,
-                                size: 50,
-                                color: Colors.deepPurple,
-                              ),
+                              backgroundImage: NetworkImage(profilePic),
+                              
                             ),
                     ),
                   ),
@@ -63,7 +61,7 @@ class Profile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Hello, prrrrrrrrrrrrrrrrrrr!", // Replace with dynamic customer name if needed
+                    "Hello, $name!", // Replace with dynamic customer name if needed
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: Colors.deepPurple,
                           fontWeight: FontWeight.bold,
