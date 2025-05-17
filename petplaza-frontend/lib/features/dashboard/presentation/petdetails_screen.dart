@@ -161,7 +161,7 @@ class PetDetailsScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: pet.status == 'adopted' ? const SizedBox.shrink() : BottomAppBar(
         color: Colors.transparent,
         child: SizedBox(
           width: double.infinity,

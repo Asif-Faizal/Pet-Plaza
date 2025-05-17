@@ -1,12 +1,16 @@
 import { Request, Response } from 'express';
 import Order from '../models/order.model';
+import Cart from '../models/cart.model';
 import PetProduct from '../models/petProduct.model';
 
-// @desc    Create a new order
+// @desc    Create a new order from cart
 // @route   POST /api/orders
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const { productId, quantity, shippingAddress } = req.body;
+    const { 
+      shippingAddress, 
+      paymentMethod 
+    } = req.body;
     
     // Ensure user is authenticated
     if (!req.user || !req.user._id) {
@@ -18,38 +22,56 @@ export const createOrder = async (req: Request, res: Response) => {
 
     const userId = req.user._id;
 
-    // Get the product
-    const product = await PetProduct.findById(productId);
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: 'Product not found'
-      });
-    }
-
-    // Check if product is in stock
-    if (product.stock < quantity) {
+    // Get user's cart
+    const cart = await Cart.findOne({ user: userId })
+      .populate('items.product');
+    
+    if (!cart || cart.items.length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'Insufficient stock'
+        message: 'Cart is empty'
       });
     }
 
-    // Calculate total price
-    const totalPrice = product.price * quantity;
+    // Verify all items are in stock
+    for (const item of cart.items) {
+      const product = item.product as any;
+      if (product.stock < item.quantity) {
+        return res.status(400).json({
+          success: false,
+          message: `Insufficient stock for ${product.name}`
+        });
+      }
+    }
 
-    // Create the order
+    // Create order from cart
     const order = await Order.create({
-      product: productId,
       user: userId,
-      quantity,
-      totalPrice,
-      shippingAddress
+      items: cart.items.map(item => ({
+        product: item.product,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      totalAmount: cart.totalAmount,
+      shippingAddress,
+      paymentMethod,
+      paymentStatus: paymentMethod === 'cod' ? 'pending' : 'pending',
+      orderStatus: 'pending'
     });
 
     // Update product stock
-    product.stock -= quantity;
-    await product.save();
+    for (const item of cart.items) {
+      await PetProduct.findByIdAndUpdate(
+        item.product,
+        { $inc: { stock: -item.quantity } }
+      );
+    }
+
+    // Clear the cart after order creation
+    await Cart.findOneAndUpdate(
+      { user: userId },
+      { items: [], totalAmount: 0 }
+    );
 
     res.status(201).json({
       success: true,
@@ -70,7 +92,7 @@ export const getUserOrders = async (req: Request, res: Response) => {
     const userId = req.user?._id;
 
     const orders = await Order.find({ user: userId })
-      .populate('product', 'name price images')
+      .populate('items.product', 'name price images')
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -101,8 +123,8 @@ export const getProductOrders = async (req: Request, res: Response) => {
       });
     }
 
-    const orders = await Order.find({ product: productId })
-      .populate('user', 'name email contactNumber')
+    const orders = await Order.find({ 'items.product': productId })
+      .populate('user', 'name email phoneNumber')
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -122,7 +144,7 @@ export const getProductOrders = async (req: Request, res: Response) => {
 // @route   PUT /api/orders/:id/status
 export const updateOrderStatus = async (req: Request, res: Response) => {
   try {
-    const { status } = req.body;
+    const { orderStatus } = req.body;
     const { id } = req.params;
 
     const order = await Order.findById(id);
@@ -133,16 +155,69 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
       });
     }
 
-    // Verify the product belongs to the adoption centre
-    const product = await PetProduct.findById(order.product);
-    if (!product) {
+    order.orderStatus = orderStatus;
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      data: order
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// @desc    Get order by ID
+// @route   GET /api/orders/:id
+export const getOrderById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const order = await Order.findById(id)
+      .populate('items.product', 'name price images')
+      .populate('user', 'name email phoneNumber');
+
+    if (!order) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found'
+        message: 'Order not found'
       });
     }
 
-    order.status = status;
+    res.status(200).json({
+      success: true,
+      data: order
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// @desc    Update payment status
+// @route   PUT /api/orders/:id/payment
+export const updatePaymentStatus = async (req: Request, res: Response) => {
+  try {
+    const { paymentStatus, paymentId } = req.body;
+    const { id } = req.params;
+
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    order.paymentStatus = paymentStatus;
+    if (paymentId) {
+      order.paymentId = paymentId;
+    }
     await order.save();
 
     res.status(200).json({
