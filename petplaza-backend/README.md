@@ -1,81 +1,71 @@
-# Pet Plaza Backend API
+# PetPlaza Backend
 
-A RESTful API for the Pet Plaza application built with Node.js, Express, TypeScript, and MongoDB.
+## Overview
+This is the backend for the PetPlaza application, providing RESTful APIs for user management, pet adoption, product sales, and more.
 
-## Features
-
-- User authentication with JWT
-- CRUD operations for pets
-- User profile management
-- Secure API with proper authentication middleware
-- TypeScript for better type safety and development experience
-
-## Tech Stack
-
-- Node.js
-- Express.js
-- TypeScript
-- MongoDB with Mongoose ODM
-- JWT for authentication
-- Cors, Helmet for security
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v14+)
-- MongoDB
-
-### Installation
-
-1. Clone the repository
-```
-git clone <repository-url>
-```
-
-2. Install dependencies
-```
-cd petplaza-backend
-npm install
-```
-
-3. Set up environment variables
-```
-cp .env.example .env
-```
-Edit the `.env` file with your configuration.
-
-4. Start development server
-```
-npm run dev
-```
-
-5. Build for production
-```
-npm run build
-```
-
-6. Start production server
-```
-npm start
-```
+## Setup
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Start the server:
+   ```bash
+   npm run dev
+   ```
 
 ## API Endpoints
 
-### Auth
-- `POST /api/users/login` - Login user
-- `POST /api/users/register` - Register new user
+### Health Check
+- `GET /api/` — Returns API status.
 
-### Users
-- `GET /api/users/profile` - Get user profile
-- `PUT /api/users/profile` - Update user profile
+### Users (`/api/users`)
+- `POST /login` — User login
+- `POST /register/user` — Register user (with profilePic upload)
+- `POST /register/adoption-centre` — Register adoption centre (with image upload)
+- `GET /profile` — Get user profile
+- `PUT /profile` — Update user or centre profile (with optional image upload)
 
-### Pets
-- `GET /api/pets` - Get all pets
-- `GET /api/pets/:id` - Get pet by ID
-- `POST /api/pets` - Create new pet
-- `PUT /api/pets/:id` - Update pet
-- `DELETE /api/pets/:id` - Delete pet
+### Pets (`/api/pets`)
+- `GET /` — List all pets
+- `GET /filter` — Filter pets by type and status
+- `GET /centre` — List pets by adoption centre (protected)
+- `POST /` — Add a new pet (protected, with up to 4 images)
+- `PUT /:id/status` — Update pet status (protected)
+- `GET /:id` — Get pet by ID
+
+### Adoption Requests (`/api/adoption-requests`)
+- `POST /` — Create adoption request (protected)
+- `GET /user` — Get user's adoption requests (protected)
+- `GET /centre` — Get centre's adoption requests (protected)
+- `PUT /:id/status` — Update adoption request status (protected)
+
+### Pet Products (`/api/pet-products`)
+- `GET /` — List all pet products
+- `GET /centre/:centreId` — List products by centre
+- `POST /` — Add pet product (with up to 4 images)
+
+### Orders (`/api/orders`)
+- `POST /` — Create order from cart (protected)
+- `GET /user` — Get user's orders (protected)
+- `GET /product/:productId` — Get product orders (for centres, protected)
+- `GET /:id` — Get order by ID (protected)
+- `PUT /:id/status` — Update order status (protected)
+- `PUT /:id/payment` — Update payment status (protected)
+
+### Cart (`/api/cart`)
+- `POST /` — Add to cart (protected)
+- `GET /` — Get user's cart (protected)
+- `PUT /:productId` — Update cart item quantity (protected)
+- `DELETE /:productId` — Remove item from cart (protected)
+- `DELETE /` — Clear cart (protected)
+
+## Middleware
+- **Authentication:** Most routes require authentication via middleware.
+- **File Uploads:** Handled via `multer` middleware for images.
+
+## Notes
+- Ensure environment variables are set for DB and JWT.
+- See source for more details on controllers and models.
 
 ## Project Structure
 
