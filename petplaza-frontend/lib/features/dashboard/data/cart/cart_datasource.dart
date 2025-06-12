@@ -10,8 +10,9 @@ import 'get_cart_model.dart';
 
 
 abstract class CartRemoteDataSource {
-  Future<CartEntity> addToCart(String productId, int quantity,String token);
+  Future<CartEntity> addToCart(String productId, int quantity, String token);
   Future<GetCartEntity> getCartItems(String token);
+  Future<CartEntity> deleteCartItem(String productId, String token);
 }
 
 class CartRemoteDataSourceImpl implements CartRemoteDataSource {
@@ -20,7 +21,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   CartRemoteDataSourceImpl(this.client);
 
   @override
-  Future<CartEntity> addToCart(String productId, int quantity,String token) async {
+  Future<CartEntity> addToCart(String productId, int quantity, String token) async {
     final response = await client.post(
       Uri.parse('${ApiConfig.baseUrl}/cart'),
       headers: {'Content-Type': 'application/json','Authorization': 'Bearer $token'},
@@ -54,6 +55,25 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
       return CartModelGet.fromJson(decoded['data']);
     } else {
       throw Exception('Failed to load cart items');
+    }
+  }
+
+  @override
+  Future<CartEntity> deleteCartItem(String productId, String token) async {
+    final response = await client.delete(
+      Uri.parse('${ApiConfig.baseUrl}/cart/$productId'),
+      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
+    );
+    debugPrint('Token: $token');
+    debugPrint('Request URL: ${ApiConfig.baseUrl}/cart/$productId');
+    debugPrint('Response status: ${response.statusCode}');
+    debugPrint('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body);
+      return CartModel.fromJson(decoded['data']);
+    } else {
+      throw Exception('Failed to delete item from cart');
     }
   }
 }

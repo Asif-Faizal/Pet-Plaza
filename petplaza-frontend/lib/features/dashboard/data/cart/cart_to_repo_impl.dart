@@ -13,17 +13,27 @@ class CartRepositoryImpl implements CartRepository {
   @override
   Future<Either<String, CartEntity>> addToCart(String productId, int quantity, String token) async {
     try {
-      final result = await dataSource.addToCart(productId, quantity,token);
+      final result = await dataSource.addToCart(productId, quantity, token);
       return Right(result);
     } catch (e) {
       return Left(e.toString());
     }
   }
 
-    @override
+  @override
   Future<Either<String, GetCartEntity>> getCartItems(String token) async {
     try {
       final result = await dataSource.getCartItems(token);
+      return Right(result);
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  @override
+  Future<Either<String, CartEntity>> deleteCartItem(String productId, String token) async {
+    try {
+      final result = await dataSource.deleteCartItem(productId, token);
       return Right(result);
     } catch (e) {
       return Left(e.toString());

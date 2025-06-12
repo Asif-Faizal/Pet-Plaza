@@ -33,6 +33,7 @@ import '../../features/register/data/register_user_datasource.dart';
 import '../../features/register/data/register_user_repo_impl.dart';
 import '../../features/register/domain/register_user.dart';
 import '../../features/register/domain/register_user_repo.dart';
+import '../../features/dashboard/bloc/delete_cart_item/delete_cart_item_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -128,4 +129,8 @@ Future<void> initDependencies() async {
   sl.registerFactory(() => AddToCartBloc(sl()));
   sl.registerFactory(()=> GetCartItemsBloc(sl()));
 
+  // Bloc
+  sl.registerFactory(
+    () => DeleteCartItemBloc(sl()),
+  );
 }
