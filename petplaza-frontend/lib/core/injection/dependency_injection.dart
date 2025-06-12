@@ -7,6 +7,7 @@ import '../../features/dashboard/bloc/add_to_cart/add_to_cart_bloc.dart';
 import '../../features/dashboard/bloc/adoption_request/adoption_requests_bloc.dart';
 import '../../features/dashboard/bloc/pet/pet_bloc.dart';
 import '../../features/dashboard/bloc/pet_items/pet_items_bloc.dart';
+import '../../features/dashboard/bloc/update_cart_item/update_cart_item_bloc.dart';
 import '../../features/dashboard/bloc/user_adoption_requests/user_adoption_requests_bloc.dart';
 import '../../features/dashboard/data/adoption_request/adoption_request_datasource.dart';
 import '../../features/dashboard/data/adoption_request/adoption_request_repo_impl.dart';
@@ -133,4 +134,5 @@ Future<void> initDependencies() async {
   sl.registerFactory(
     () => DeleteCartItemBloc(sl()),
   );
+  sl.registerFactory(() => UpdateCartItemBloc(sl()));
 }

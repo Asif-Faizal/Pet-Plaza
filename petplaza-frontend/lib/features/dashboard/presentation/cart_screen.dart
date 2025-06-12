@@ -5,6 +5,7 @@ import '../../../core/api/api_config.dart';
 import '../../../core/injection/dependency_injection.dart';
 import '../bloc/get_cart_items/get_cart_items_bloc.dart';
 import '../bloc/delete_cart_item/delete_cart_item_bloc.dart';
+import '../bloc/update_cart_item/update_cart_item_bloc.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key, required this.token});
@@ -19,6 +20,9 @@ class CartScreen extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => sl<DeleteCartItemBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => sl<UpdateCartItemBloc>(),
         ),
       ],
       child: CartView(token: token),
@@ -46,26 +50,51 @@ class CartView extends StatelessWidget {
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
-      body: BlocListener<DeleteCartItemBloc, DeleteCartItemState>(
-        listener: (context, state) {
-          if (state is DeleteCartItemSuccess) {
-            context.read<GetCartItemsBloc>().add(GetCartItems(token));
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Item removed from cart'),
-                duration: Duration(seconds: 2),
-              ),
-            );
-          } else if (state is DeleteCartItemError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          }
-        },
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<DeleteCartItemBloc, DeleteCartItemState>(
+            listener: (context, state) {
+              if (state is DeleteCartItemSuccess) {
+                context.read<GetCartItemsBloc>().add(GetCartItems(token));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Item removed from cart'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              } else if (state is DeleteCartItemError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Colors.red,
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+          ),
+          BlocListener<UpdateCartItemBloc, UpdateCartItemState>(
+            listener: (context, state) {
+              if (state is UpdateCartItemSuccess) {
+                context.read<GetCartItemsBloc>().add(GetCartItems(token));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Cart updated successfully'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              } else if (state is UpdateCartItemError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Colors.red,
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
         child: BlocBuilder<GetCartItemsBloc, GetCartItemsState>(
           builder: (context, state) {
             if (state is CartLoading) {
@@ -177,7 +206,15 @@ class CartView extends StatelessWidget {
                                               ),
                                               icon: const Icon(Icons.remove),
                                               onPressed: () {
-                                                // TODO: Implement quantity decrease
+                                                if (item.quantity > 1) {
+                                                  context
+                                                      .read<UpdateCartItemBloc>()
+                                                      .add(UpdateCartItem(
+                                                        item.product.id,
+                                                        item.quantity - 1,
+                                                        token,
+                                                      ));
+                                                }
                                               },
                                             ),
                                             Container(
@@ -205,7 +242,13 @@ class CartView extends StatelessWidget {
                                               ),
                                               icon: const Icon(Icons.add),
                                               onPressed: () {
-                                                // TODO: Implement quantity increase
+                                                context
+                                                    .read<UpdateCartItemBloc>()
+                                                    .add(UpdateCartItem(
+                                                      item.product.id,
+                                                      item.quantity + 1,
+                                                      token,
+                                                    ));
                                               },
                                             ),
                                           ],
