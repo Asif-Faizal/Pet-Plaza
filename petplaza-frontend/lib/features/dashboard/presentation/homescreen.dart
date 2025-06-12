@@ -1,9 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:petplaza/features/dashboard/presentation/adoption_request_screen.dart';
+import 'package:petplaza/features/dashboard/presentation/cart_screen.dart';
 import 'package:petplaza/features/dashboard/presentation/selectpettype.dart';
 import 'package:petplaza/features/dashboard/presentation/profile.dart';
 
+import 'pet_items_screen.dart';
 import 'user_adoption_requests.dart';
 
 class Homescreen extends StatelessWidget {
@@ -41,13 +43,13 @@ class Homescreen extends StatelessWidget {
     List<Map<String, dynamic>> gridItems = userType == "user"
         ? [
             {"icon": Icons.pets, "text": "Adopt Pets"},
-            {"icon": Icons.favorite, "text": "Saved Pets"},
+            {"icon": Icons.shop, "text": "Shopping Bag"},
             {"icon": Icons.shopping_cart, "text": "Buy Accessories"},
             {"icon": Icons.sell, "text": "Adoption Requests"},
           ]
         : [
             {"icon": Icons.add_box, "text": "Add Pet"},
-            {"icon": Icons.pets, "text": "Adopt Pets"},
+            {"icon": Icons.shop, "text": "Shopping Bag"},
             {"icon": Icons.shopping_cart, "text": "Buy Accessories"},
             {"icon": Icons.sell, "text": "Adoption Requests"},
           ];
@@ -149,15 +151,21 @@ class Homescreen extends StatelessWidget {
                           }
                           break;
                         case 1:
-                          if (userType == "adoption_centre") {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        SelectPetTypePage(token: token)));
-                          }
+                                        CartScreen(token: token)));
+                          
                           break;
                         case 2:
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PetItemsScreen(
+                                        token: token,
+                                      )));
                           break;
                         case 3:
                         if(userType == "user"){

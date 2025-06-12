@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../../core/api/api_config.dart';
 import 'user_adoption_request_model.dart';
 
 abstract class UserAdoptionRequestRemoteDataSource {
@@ -16,7 +17,7 @@ class UserAdoptionRequestRemoteDataSourceImpl implements UserAdoptionRequestRemo
   @override
   Future<List<UserAdoptionRequestModel>> getUserAdoptionRequests(String token) async {
     final response = await client.get(
-      Uri.parse('http://localhost:5000/api/adoption-requests/user'),
+      Uri.parse('${ApiConfig.baseUrl}/adoption-requests/user'),
       headers: {'Authorization': 'Bearer $token'},
     );
     debugPrint(response.body);

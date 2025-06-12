@@ -32,7 +32,7 @@ class _AdoptpetsState extends State<Adoptpets> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const SizedBox.shrink(),
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.deepPurpleAccent,
         title: Text(
           widget.petType.isEmpty ? 'All Pets' : widget.petType,

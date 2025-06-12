@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 
+import '../../../core/api/api_config.dart';
 import 'register_user_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,8 +19,10 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<RegisterResponseModel> registerUser(
       RegisterRequestModel request, bool isIndividual) async {
-    var uri = Uri.parse('http://localhost:5000/api/users/register/user');
+    var uri = Uri.parse('${ApiConfig.baseUrl}/users/register/user');
     var requestBody = http.MultipartRequest('POST', uri);
+
+    debugPrint("Request URL: $uri");
 
     // Common fields for both individual and non-individual
     requestBody.fields['name'] = request.name;

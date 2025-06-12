@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../../core/api/api_config.dart';
 import 'adoption_request_model.dart';
 
 abstract class PetAdoptionRemoteDataSource {
@@ -16,7 +17,7 @@ class PetAdoptionRemoteDataSourceImpl implements PetAdoptionRemoteDataSource {
   @override
   Future<AdoptionResponseModel> submitAdoptionRequest(AdoptionRequestModel request, String token) async {
     final response = await client.post(
-      Uri.parse('http://localhost:5000/api/adoption-requests'),
+      Uri.parse('${ApiConfig.baseUrl}/adoption-requests'),
       headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
       body: jsonEncode(request.toJson()),
     );

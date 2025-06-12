@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../../core/api/api_config.dart';
 import 'pet_request_model.dart';
 import 'pet_response_model.dart';
 
@@ -20,7 +21,7 @@ class PetRemoteDatasourceImpl implements PetRemoteDatasource {
     final petType = queryParams['petType'] ?? '';
     final status = queryParams['status'] ?? '';
     
-    final uri = Uri.parse('http://localhost:5000/api/pets/filter?petType=$petType&status=$status');
+    final uri = Uri.parse('${ApiConfig.baseUrl}/pets/filter?petType=$petType&status=$status');
     final response = await client.get(uri);
     debugPrint(response.body);
     if (response.statusCode == 200) {
