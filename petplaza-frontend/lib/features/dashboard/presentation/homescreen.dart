@@ -77,7 +77,7 @@ class Homescreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          Profile(name: name, profilePic: profilePic)));
+                          Profile(name: name, profilePic: profilePic, token: token)));
             },
             child: CircleAvatar(
               backgroundImage: NetworkImage(profilePic),

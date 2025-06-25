@@ -39,6 +39,10 @@ import '../../features/dashboard/bloc/place_order/place_order_bloc.dart';
 import '../../features/dashboard/data/order/order_datasource.dart';
 import '../../features/dashboard/data/order/order_repo_impl.dart';
 import '../../features/dashboard/domain/order/order_repo.dart';
+import '../../features/dashboard/bloc/order_history/order_history_bloc.dart';
+import '../../features/dashboard/data/order_history/order_history_datasource.dart';
+import '../../features/dashboard/data/order_history/order_history_repo_impl.dart';
+import '../../features/dashboard/domain/order_history/order_history_repo.dart';
 
 final sl = GetIt.instance;
 
@@ -148,4 +152,13 @@ Future<void> initDependencies() async {
     () => OrderRepositoryImpl(remoteDataSource: sl()),
   );
   sl.registerFactory(() => PlaceOrderBloc(orderRepository: sl()));
+
+  // Order History Dependencies
+  sl.registerLazySingleton<OrderHistoryRemoteDataSource>(
+    () => OrderHistoryRemoteDataSourceImpl(client: sl()),
+  );
+  sl.registerLazySingleton<OrderHistoryRepository>(
+    () => OrderHistoryRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerFactory(() => OrderHistoryBloc(orderHistoryRepository: sl()));
 }

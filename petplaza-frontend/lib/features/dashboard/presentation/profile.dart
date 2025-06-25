@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:petplaza/features/splash/presentation/initial_page.dart';
 
+import 'order_history_screen.dart';
+
 class Profile extends StatelessWidget {
-  const Profile({super.key, required this.name, required this.profilePic});
+  const Profile({super.key, required this.name, required this.profilePic, required this.token});
   final String name;
   final String profilePic;
+  final String token;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +60,9 @@ class Profile extends StatelessWidget {
                   SizedBox(
                     height: 50,
                     width: double.infinity,
-                    child: ElevatedButton.icon(onPressed: (){}, icon: Icon(Icons.history,color: Colors.white,), label: Text("Order History",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),))
+                    child: ElevatedButton.icon(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderHistoryScreen(token: token)));
+                    }, icon: Icon(Icons.history,color: Colors.white,), label: Text("Order History",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),))
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
