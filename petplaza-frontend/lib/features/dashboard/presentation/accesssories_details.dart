@@ -257,35 +257,28 @@ class _AccesssoriesDetailsState extends State<AccesssoriesDetails> {
                   ),
                 );
               } else if (state is CartLoaded) {
-                // Check if current product is in cart
-                final isProductInCart = state.cart.items.any(
-                  (item) => item.productId == widget.petItem.id,
-                );
-                
-                if (isProductInCart) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => CartScreen(token: widget.token),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurpleAccent,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 2,
-                    ),
-                    child: const Text(
-                      'View in Cart',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                return ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => CartScreen(token: widget.token),
                     ),
                   );
-                }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurpleAccent,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 2,
+                ),
+                child: const Text(
+                  'View in Cart',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              );
               }
               return ElevatedButton(
                 onPressed: () {
