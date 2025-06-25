@@ -11,6 +11,7 @@ import 'core/theme/app_theme.dart';
 import 'features/dashboard/bloc/add_to_cart/add_to_cart_bloc.dart';
 import 'features/dashboard/bloc/adoption_request/adoption_requests_bloc.dart';
 import 'features/dashboard/bloc/pet/pet_bloc.dart';
+import 'features/dashboard/bloc/place_order/place_order_bloc.dart';
 import 'features/dashboard/bloc/user_adoption_requests/user_adoption_requests_bloc.dart';
 import 'features/login/bloc/bloc/login_bloc.dart';
 import 'features/login/cubit/login_cubit.dart';
@@ -78,6 +79,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) {
             return di.sl<GetCartItemsBloc>();
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return di.sl<PlaceOrderBloc>();
           },
         ),
       ],

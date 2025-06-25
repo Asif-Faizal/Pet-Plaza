@@ -35,6 +35,10 @@ import '../../features/register/data/register_user_repo_impl.dart';
 import '../../features/register/domain/register_user.dart';
 import '../../features/register/domain/register_user_repo.dart';
 import '../../features/dashboard/bloc/delete_cart_item/delete_cart_item_bloc.dart';
+import '../../features/dashboard/bloc/place_order/place_order_bloc.dart';
+import '../../features/dashboard/data/order/order_datasource.dart';
+import '../../features/dashboard/data/order/order_repo_impl.dart';
+import '../../features/dashboard/domain/order/order_repo.dart';
 
 final sl = GetIt.instance;
 
@@ -135,4 +139,13 @@ Future<void> initDependencies() async {
     () => DeleteCartItemBloc(sl()),
   );
   sl.registerFactory(() => UpdateCartItemBloc(sl()));
+
+  // Order Dependencies
+  sl.registerLazySingleton<OrderRemoteDataSource>(
+    () => OrderRemoteDataSourceImpl(client: sl()),
+  );
+  sl.registerLazySingleton<OrderRepository>(
+    () => OrderRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerFactory(() => PlaceOrderBloc(orderRepository: sl()));
 }

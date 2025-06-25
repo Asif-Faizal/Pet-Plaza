@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc/place_order/place_order_bloc.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({
@@ -28,6 +31,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final TextEditingController stateController = TextEditingController();
   final TextEditingController zipController = TextEditingController();
 
+  // Card details
+  Map<String, String>? savedCardDetails;
+  final TextEditingController cardNumberController = TextEditingController();
+  final TextEditingController cardHolderController = TextEditingController();
+  final TextEditingController expiryController = TextEditingController();
+  final TextEditingController cvvController = TextEditingController();
+
   @override
   void dispose() {
     nameController.dispose();
@@ -36,12 +46,34 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     cityController.dispose();
     stateController.dispose();
     zipController.dispose();
+    cardNumberController.dispose();
+    cardHolderController.dispose();
+    expiryController.dispose();
+    cvvController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocListener<PlaceOrderBloc, PlaceOrderState>(
+      listener: (context, state) {
+        if (state is PlaceOrderLoading) {
+          setState(() {
+            isProcessingOrder = true;
+          });
+        } else if (state is PlaceOrderSuccess) {
+          setState(() {
+            isProcessingOrder = false;
+          });
+          _showSuccessDialog(state.order);
+        } else if (state is PlaceOrderError) {
+          setState(() {
+            isProcessingOrder = false;
+          });
+          _showNotification('Error: ${state.message}', isError: true);
+        }
+      },
+      child: Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         backgroundColor: Colors.deepPurpleAccent,
@@ -83,7 +115,127 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
       ),
       bottomNavigationBar: _buildBottomCheckoutButton(),
+    ),
+  );
+}
+
+  void _showSuccessDialog(dynamic order) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.check_circle,
+              color: Colors.green,
+              size: 60,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Order Placed Successfully!',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Order ID: ${order.id}',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              selectedPaymentMethod == 'card' 
+                  ? 'Your payment has been processed.'
+                  : 'Please have cash ready for delivery.',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close dialog
+                  Navigator.of(context).pop(); // Go back to cart
+                  Navigator.of(context).pop(); // Go back to main screen
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurpleAccent,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Continue Shopping'),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
+  }
+
+  void _showNotification(String message, {bool isError = false}) {
+    final overlay = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).padding.top + 16,
+        left: 16,
+        right: 16,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: isError ? Colors.red : Colors.green,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  isError ? Icons.error : Icons.check_circle,
+                  color: Colors.white,
+                  size: 24,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(overlayEntry);
+    
+    // Remove after 3 seconds
+    Future.delayed(const Duration(seconds: 3), () {
+      overlayEntry.remove();
+    });
   }
 
   Widget _buildOrderSummarySection() {
@@ -365,46 +517,117 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ? Colors.deepPurpleAccent.withOpacity(0.05)
                     : Colors.white,
               ),
-              child: Row(
+              child: Column(
                 children: [
-                  Icon(
-                    Icons.credit_card,
-                    color: selectedPaymentMethod == 'card'
-                        ? Colors.deepPurpleAccent
-                        : Colors.grey[600],
-                    size: 24,
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.credit_card,
+                        color: selectedPaymentMethod == 'card'
+                            ? Colors.deepPurpleAccent
+                            : Colors.grey[600],
+                        size: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Credit/Debit Card',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: selectedPaymentMethod == 'card'
+                                    ? Colors.deepPurpleAccent
+                                    : Colors.black87,
+                              ),
+                            ),
+                            Text(
+                              'Pay securely with your card',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Radio<String>(
+                        value: 'card',
+                        groupValue: selectedPaymentMethod,
+                        onChanged: (value) => setState(() => selectedPaymentMethod = value!),
+                        activeColor: Colors.deepPurpleAccent,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Credit/Debit Card',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: selectedPaymentMethod == 'card'
-                                ? Colors.deepPurpleAccent
-                                : Colors.black87,
+                  
+                  // Show saved card details if available
+                  if (selectedPaymentMethod == 'card' && savedCardDetails != null) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.green[50],
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.green[200]!),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.check_circle, color: Colors.green, size: 16),
+                              const SizedBox(width: 6),
+                              const Text(
+                                'Card Details Saved',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        Text(
-                          'Pay securely with your card',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[600],
+                          const SizedBox(height: 8),
+                          Text(
+                            'Card Holder: ${savedCardDetails!['holderName']}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[700],
+                            ),
                           ),
-                        ),
-                      ],
+                          Text(
+                            'Card Number: •••• •••• •••• ${savedCardDetails!['cardNumber']!.substring(savedCardDetails!['cardNumber']!.length - 4)}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                          Text(
+                            'Expiry: ${savedCardDetails!['expiry']}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          InkWell(
+                            onTap: () => _showCardDetailsBottomSheet(),
+                            child: Text(
+                              'Edit Card Details',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.deepPurpleAccent,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Radio<String>(
-                    value: 'card',
-                    groupValue: selectedPaymentMethod,
-                    onChanged: (value) => setState(() => selectedPaymentMethod = value!),
-                    activeColor: Colors.deepPurpleAccent,
-                  ),
+                  ],
                 ],
               ),
             ),
@@ -561,7 +784,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget _buildBottomCheckoutButton() {
-    final isReadyToOrder = savedAddress != null && !isProcessingOrder;
+    final isAddressReady = savedAddress != null;
+    final isCardReady = selectedPaymentMethod == 'cod' || 
+                       (selectedPaymentMethod == 'card' && savedCardDetails != null);
+    final isReadyToOrder = isAddressReady && isCardReady && !isProcessingOrder;
+    
+    String buttonText;
+    if (!isAddressReady) {
+      buttonText = 'Add Delivery Address to Continue';
+    } else if (selectedPaymentMethod == 'card' && savedCardDetails == null) {
+      buttonText = 'Add Card Details to Continue';
+    } else {
+      buttonText = 'Place Order';
+    }
     
     return Container(
       padding: const EdgeInsets.all(16),
@@ -581,7 +816,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           width: double.infinity,
           height: 50,
           child: ElevatedButton(
-            onPressed: isReadyToOrder ? _placeOrder : null,
+            onPressed: isReadyToOrder ? _placeOrder : _handleButtonPress,
             style: ElevatedButton.styleFrom(
               backgroundColor: isReadyToOrder
                   ? Colors.deepPurpleAccent
@@ -602,14 +837,165 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ),
                   )
                 : Text(
-                    isReadyToOrder
-                        ? 'Place Order'
-                        : 'Add Delivery Address to Continue',
+                    buttonText,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handleButtonPress() {
+    if (savedAddress == null) {
+      _showAddressBottomSheet();
+    } else if (selectedPaymentMethod == 'card' && savedCardDetails == null) {
+      _showCardDetailsBottomSheet();
+    }
+  }
+
+  void _showCardDetailsBottomSheet() {
+    // Clear controllers if editing existing card
+    if (savedCardDetails != null) {
+      cardHolderController.text = savedCardDetails!['holderName'] ?? '';
+      cardNumberController.text = savedCardDetails!['cardNumber'] ?? '';
+      expiryController.text = savedCardDetails!['expiry'] ?? '';
+      cvvController.text = '';
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.75,
+          maxChildSize: 0.9,
+          minChildSize: 0.5,
+          expand: false,
+          builder: (context, scrollController) => Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Handle bar
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                
+                // Title
+                const Text(
+                  'Card Details',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                
+                // Form
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    child: Column(
+                      children: [
+                        _buildCardTextField(
+                          controller: cardHolderController,
+                          label: 'Card Holder Name',
+                          icon: Icons.person,
+                        ),
+                        const SizedBox(height: 16),
+                        
+                        _buildCardTextField(
+                          controller: cardNumberController,
+                          label: 'Card Number',
+                          icon: Icons.credit_card,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            CardNumberInputFormatter(),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildCardTextField(
+                                controller: expiryController,
+                                label: 'MM/YY',
+                                icon: Icons.calendar_today,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  ExpiryDateInputFormatter(),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _buildCardTextField(
+                                controller: cvvController,
+                                label: 'CVV',
+                                icon: Icons.lock,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(4),
+                                ],
+                                obscureText: true,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 30),
+                        
+                                                 // Save Button
+                         SizedBox(
+                           width: double.infinity,
+                           height: 50,
+                           child: Builder(
+                             builder: (buttonContext) => ElevatedButton(
+                               onPressed: () => _saveCardDetails(buttonContext),
+                               style: ElevatedButton.styleFrom(
+                                 backgroundColor: Colors.deepPurpleAccent,
+                                 foregroundColor: Colors.white,
+                                 shape: RoundedRectangleBorder(
+                                   borderRadius: BorderRadius.circular(12),
+                                 ),
+                               ),
+                               child: const Text(
+                                 'Save Card Details',
+                                 style: TextStyle(
+                                   fontSize: 16,
+                                   fontWeight: FontWeight.w600,
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -780,6 +1166,36 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
+  Widget _buildCardTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType? keyboardType,
+    List<TextInputFormatter>? inputFormatters,
+    bool obscureText = false,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: Colors.deepPurpleAccent),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.deepPurpleAccent),
+        ),
+        filled: true,
+        fillColor: Colors.grey[50],
+      ),
+    );
+  }
+
   void _saveAddress() {
     if (nameController.text.isEmpty ||
         phoneController.text.isEmpty ||
@@ -787,12 +1203,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         cityController.text.isEmpty ||
         stateController.text.isEmpty ||
         zipController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill in all fields'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showErrorSnackBar('Please fill in all fields');
       return;
     }
 
@@ -807,79 +1218,237 @@ ${cityController.text}, ${stateController.text} ${zipController.text}''';
 
     Navigator.of(context).pop();
     
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Address saved successfully!'),
-        backgroundColor: Colors.green,
+    _showSuccessSnackBar('Address saved successfully!');
+  }
+
+  void _saveCardDetails(BuildContext bottomSheetContext) {
+    // Validate card holder name
+    if (cardHolderController.text.trim().isEmpty) {
+      _showErrorSnackBar('Please enter card holder name', bottomSheetContext);
+      return;
+    }
+
+    // Validate card number
+    final cardNumber = cardNumberController.text.replaceAll(' ', '');
+    if (cardNumber.length != 16) {
+      _showErrorSnackBar('Please enter a valid 16-digit card number', bottomSheetContext);
+      return;
+    }
+
+    // Validate expiry
+    if (expiryController.text.length != 5) {
+      _showErrorSnackBar('Please enter expiry date in MM/YY format', bottomSheetContext);
+      return;
+    }
+
+    final expiry = expiryController.text;
+    final month = int.tryParse(expiry.substring(0, 2)) ?? 0;
+    final year = int.tryParse('20${expiry.substring(3, 5)}') ?? 0;
+    final now = DateTime.now();
+    final expiryDate = DateTime(year, month + 1, 0);
+
+    if (month < 1 || month > 12) {
+      _showErrorSnackBar('Please enter a valid month (01-12)', bottomSheetContext);
+      return;
+    }
+
+    if (expiryDate.isBefore(now)) {
+      _showErrorSnackBar('Card has expired', bottomSheetContext);
+      return;
+    }
+
+    // Validate CVV
+    if (cvvController.text.length < 3 || cvvController.text.length > 4) {
+      _showErrorSnackBar('Please enter a valid CVV (3-4 digits)', bottomSheetContext);
+      return;
+    }
+
+    // Save card details
+    setState(() {
+      savedCardDetails = {
+        'holderName': cardHolderController.text.trim(),
+        'cardNumber': cardNumber,
+        'expiry': expiry,
+        'cvv': cvvController.text,
+      };
+    });
+
+    Navigator.of(bottomSheetContext).pop();
+    
+    _showSuccessSnackBar('Card details saved successfully!');
+  }
+
+  void _showErrorSnackBar(String message, [BuildContext? snackBarContext]) {
+    final overlay = Overlay.of(snackBarContext ?? context);
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).padding.top + 16,
+        left: 16,
+        right: 16,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(overlayEntry);
+    
+    // Remove after 3 seconds
+    Future.delayed(const Duration(seconds: 3), () {
+      overlayEntry.remove();
+    });
+  }
+
+  void _showSuccessSnackBar(String message) {
+    final overlay = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).padding.top + 16,
+        left: 16,
+        right: 16,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(overlayEntry);
+    
+    // Remove after 3 seconds
+    Future.delayed(const Duration(seconds: 3), () {
+      overlayEntry.remove();
+    });
+  }
+
+  void _placeOrder() {
+    if (savedAddress == null) return;
+
+    // Parse the saved address
+    final addressLines = savedAddress!.split('\n');
+    final fullName = addressLines[0];
+    final phone = addressLines[1];
+    final street = addressLines[2];
+    final cityStateZip = addressLines[3].split(', ');
+    final city = cityStateZip[0];
+    final stateZip = cityStateZip[1].split(' ');
+    final state = stateZip[0];
+    final postalCode = stateZip[1];
+
+    // Place order using BLoC
+    // Convert 'card' to 'online' for backend compatibility
+    final paymentMethod = selectedPaymentMethod == 'card' ? 'online' : selectedPaymentMethod;
+    
+    context.read<PlaceOrderBloc>().add(
+      PlaceOrder(
+        street: street,
+        city: city,
+        state: state,
+        postalCode: postalCode,
+        country: 'USA', // Default country
+        paymentMethod: paymentMethod,
+        token: widget.token,
       ),
     );
   }
+}
 
-  void _placeOrder() async {
-    setState(() {
-      isProcessingOrder = true;
-    });
+// Input formatters for card fields
+class CardNumberInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text.replaceAll(' ', '');
+    if (text.length > 16) return oldValue;
+    
+    final buffer = StringBuffer();
+    for (int i = 0; i < text.length; i++) {
+      buffer.write(text[i]);
+      if ((i + 1) % 4 == 0 && i + 1 != text.length) {
+        buffer.write(' ');
+      }
+    }
+    
+    return TextEditingValue(
+      text: buffer.toString(),
+      selection: TextSelection.collapsed(offset: buffer.length),
+    );
+  }
+}
 
-    // Simulate order processing
-    await Future.delayed(const Duration(seconds: 2));
-
-    setState(() {
-      isProcessingOrder = false;
-    });
-
-    // Show success dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 60,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Order Placed Successfully!',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Your order will be delivered soon.',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close dialog
-                  Navigator.of(context).pop(); // Go back to cart
-                  Navigator.of(context).pop(); // Go back to main screen
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurpleAccent,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('Continue Shopping'),
-              ),
-            ),
-          ],
-        ),
-      ),
+class ExpiryDateInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text.replaceAll('/', '');
+    if (text.length > 4) return oldValue;
+    
+    final buffer = StringBuffer();
+    for (int i = 0; i < text.length; i++) {
+      buffer.write(text[i]);
+      if (i == 1 && text.length > 2) {
+        buffer.write('/');
+      }
+    }
+    
+    return TextEditingValue(
+      text: buffer.toString(),
+      selection: TextSelection.collapsed(offset: buffer.length),
     );
   }
 }
