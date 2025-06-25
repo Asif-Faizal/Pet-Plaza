@@ -1,3 +1,3 @@
 class ApiConfig{
-  static const String baseUrl = "https://pet-plaza.onrender.com/api";
+  static const String baseUrl = "http://localhost:5000/api";
 }
