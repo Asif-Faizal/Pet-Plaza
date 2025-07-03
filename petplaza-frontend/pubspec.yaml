@@ -73,6 +73,7 @@ flutter:
     - lib/core/asset/animation/initial.json
     - lib/core/asset/animation/loading.json
     - lib/core/asset/animation/dog_food.jpg
+    - lib/core/asset/animation/pets.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

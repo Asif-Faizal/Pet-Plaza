@@ -94,6 +94,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: InitialPage(), // Initial Page
         theme: AppThemes.lightTheme,
         darkTheme: AppThemes.darkTheme,
